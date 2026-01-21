@@ -3,378 +3,227 @@ the  games code
 you can add to the code 
 ctrl c+v the game  code  to this  site https://codepen.io/pen/
 
-!DOCTYPE html>
-<html lang="">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
-    <header></header>
-    <main></main>
-    <footer></footer>
-  </body>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>3D Soldier Strike: Menu Edition</title>
+    <title>3D Battlefront: CASTLE & GORE FINAL</title>
     <style>
         body { margin: 0; overflow: hidden; background: #000; font-family: 'Segoe UI', sans-serif; }
-
-        /* Main Menu Styling */
-        #main-menu {
-            position: absolute; width: 100%; height: 100%;
-            background: radial-gradient(circle, #1a1a2e, #000);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 2000; color: gold; text-align: center;
+        #dev-console {
+            position: absolute; top: -100px; left: 0; width: 100%; height: 50px;
+            background: rgba(0, 40, 0, 0.95); border-bottom: 2px solid #0f0;
+            display: flex; align-items: center; justify-content: center;
+            transition: top 0.3s; z-index: 10001; pointer-events: auto;
         }
-        #main-menu h1 { font-size: 70px; margin-bottom: 10px; text-shadow: 0 0 20px #ff4500; }
-
-        /* UI Layer */
-        #ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; color: white; display: none; }
-
-        #unit-sidebar { position: absolute; left: 15px; top: 15px; pointer-events: auto; display: flex; flex-direction: column; gap: 10px; }
-        #missile-area { position: absolute; left: 15px; bottom: 30px; pointer-events: auto; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 12px; border: 2px solid #ff4500; }
-
-        #boss-ui { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 400px; text-align: center; }
-        #hp-container { width: 100%; height: 20px; background: #333; border: 2px solid #fff; border-radius: 10px; overflow: hidden; margin-top: 5px; }
-        #hp-bar { width: 100%; height: 100%; background: linear-gradient(90deg, #ff0000, #ff4500); transition: width 0.3s; }
-
-        .btn { width: 220px; padding: 18px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.2s; }
-        .u-btn { background: #2196f3; border-bottom: 4px solid #0d47a1; }
-        .m-btn { background: #ff4500; border-bottom: 4px solid #bf360c; }
-        .start-btn { background: #4caf50; border-bottom: 6px solid #2e7d32; font-size: 24px; pointer-events: auto; }
-        .btn:hover { transform: scale(1.05); }
-
-        #crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border: 2px solid #0f0; border-radius: 50%; display: none; }
+        #dev-input {
+            background: transparent; border: 1px solid #0f0; color: #0f0;
+            width: 70%; padding: 8px; font-family: monospace; outline: none; font-size: 16px;
+        }
+        #ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; color: white; }
+        #unit-control { 
+            position: absolute; left: 15px; top: 15px; pointer-events: auto; 
+            background: rgba(0, 0, 0, 0.85); padding: 15px; border-radius: 8px; border: 2px solid #00e5ff;
+        }
+        .deploy-btn { width: 180px; padding: 10px; background: #00e5ff; color: #000; border: none; font-weight: bold; cursor: pointer; margin-top:5px; display: block; text-transform: uppercase; }
+        .bar-container { width: 300px; height: 15px; background: #111; border: 2px solid #444; margin: 5px auto; overflow: hidden; }
+        #hp-bar { width: 100%; height: 100%; background: #ff3d00; transition: width 0.2s; }
     </style>
 </head>
 <body>
 
-<div id="main-menu">
-    <h1>BATTLEFRONT 3D</h1>
-    <p style="color: white;">Command your army. Launch the barrage. Lead from the front.</p>
-    <br>
-    <button class="btn start-btn" onclick="startGame()">START MISSION</button>
+<div id="dev-console">
+    <span style="color:#0f0; font-family:monospace; margin-right:10px;">DEV_SYSTEM></span>
+    <input type="text" id="dev-input" placeholder="gold 5000, nuke, freeze">
 </div>
 
 <div id="ui">
-    <div id="boss-ui">
-        <div style="font-weight: bold;">ENEMY FORTRESS</div>
-        <div id="hp-container"><div id="hp-bar"></div></div>
+    <div style="position: absolute; top: 20px; width: 100%; text-align: center;">
+        <div style="color: #ff3d00; font-weight: bold;">CASTLE INTEGRITY</div>
+        <div class="bar-container"><div id="hp-bar"></div></div>
     </div>
-
-    <div id="unit-sidebar">
-        <div id="gold-display" style="font-size: 30px; color: gold;">$ <span id="g-val">50</span></div>
-        <button class="btn u-btn" onclick="spawnUnit('player', 'soldier', 10)">SOLDIER (10G)</button>
-        <button class="btn u-btn" style="background:#546e7a" onclick="spawnUnit('player', 'skeleton', 30)">SKELETON (30G)</button>
-        <button class="btn u-btn" style="background:#ffc107; color:black" onclick="spawnUnit('player', 'gold', 100)">GOLDEN KNIGHT (100G)</button>
+    <div id="unit-control">
+        <div style="font-size: 24px; color: #ffd700;">$ <span id="g-val">100</span></div>
+        <button class="deploy-btn" onclick="spawnUnit('player', 'soldier', 10)">Soldier (10G)</button>
+        <button class="deploy-btn" onclick="spawnUnit('player', 'jeep', 40)">Jeep (40G)</button>
+        <button class="deploy-btn" onclick="spawnUnit('player', 'bomber', 30)">Nacho Man (30G)</button>
+        <button class="deploy-btn" onclick="spawnUnit('player', 'plane', 60)">Air Strike (60G)</button>
     </div>
-
-    <div id="missile-area">
-        <button id="mLaunch" class="btn m-btn" onclick="armBarrage()">BARRAGE (20G)</button>
-    </div>
-
-    <div id="crosshair"></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-    // --- ENGINE SETUP ---
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x050510);
+    scene.background = new THREE.Color(0x020205);
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    const sun = new THREE.DirectionalLight(0xffffff, 1);
-    sun.position.set(10, 20, 10);
-    scene.add(sun, new THREE.AmbientLight(0x404050));
+    const sun = new THREE.DirectionalLight(0xffffff, 1.2);
+    sun.position.set(10, 30, 10);
+    scene.add(sun, new THREE.AmbientLight(0x444455));
 
-    const ground = new THREE.Mesh(new THREE.PlaneGeometry(60, 150), new THREE.MeshStandardMaterial({color: 0x1b5e20}));
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(100, 300), new THREE.MeshStandardMaterial({color: 0x111111}));
     ground.rotation.x = -Math.PI / 2;
     scene.add(ground);
 
-    // --- STATE ---
-    let gameRunning = false;
-    let gold = 50, enemyHP = 100, units = [], bombs = [], particles = [], enemyTimer = 0;
-    let isAiming = false, isPOV = false, currentMissile = null, playerUnit = null, shake = 0;
-    let keys = { w: false, a: false, s: false, d: false, space: false };
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-
-    function startGame() {
-        // Reset State
-        gold = 500; enemyHP = 100;
-        units.forEach(u => scene.remove(u.mesh));
-        units = [];
-        gameRunning = true;
-        document.getElementById('main-menu').style.display = 'none';
-        document.getElementById('ui').style.display = 'block';
-    }
-
-    function returnToMenu() {
-        gameRunning = false;
-        document.getElementById('main-menu').style.display = 'flex';
-        document.getElementById('ui').style.display = 'none';
-        document.querySelector('#main-menu h1').innerText = enemyHP <= 0 ? "wow you won want a cooke" : "just play the game bro ";
-    }
-
-    // --- CONTROLS ---
-    window.addEventListener('keydown', e => {
-        let k = e.key.toLowerCase();
-        if(keys.hasOwnProperty(k)) keys[k] = true;
-        if(k === 'f') playerUnit = playerUnit ? null : units.find(u => u.team === 'player');
+    // --- CASTLE & ARCHERS ---
+    const castle = new THREE.Group();
+    const wall = new THREE.Mesh(new THREE.BoxGeometry(40, 15, 10), new THREE.MeshStandardMaterial({color: 0x222222}));
+    castle.add(wall);
+    const archers = [];
+    [-15, 15].forEach(x => {
+        const tower = new THREE.Mesh(new THREE.BoxGeometry(6, 22, 6), new THREE.MeshStandardMaterial({color: 0x151515}));
+        tower.position.set(x, 3, -5);
+        castle.add(tower);
+        const archer = new THREE.Mesh(new THREE.BoxGeometry(1, 1.5, 1), new THREE.MeshStandardMaterial({color: 0x00ff00}));
+        archer.position.set(x, 14, -5);
+        castle.add(archer);
+        archers.push({ mesh: archer, shootTimer: 0 });
     });
-    window.addEventListener('keyup', e => { if(keys.hasOwnProperty(e.key.toLowerCase())) keys[k] = false; });
+    castle.position.set(0, 5, 65);
+    scene.add(castle);
+
+    let gold = 100, castleHP = 100, gamePaused = false;
+    let units = [], projectiles = [], enemyTimer = 0;
+
+    // --- DEV CONSOLE ---
+    let devCombo = "";
+    window.addEventListener('keydown', e => {
+        if (e.shiftKey) {
+            devCombo += e.key.toUpperCase();
+            if (devCombo.includes("DEV")) {
+                document.getElementById('dev-console').style.top = "0px";
+                document.getElementById('dev-input').focus();
+                devCombo = "";
+            }
+        }
+    });
+    document.getElementById('dev-input').addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+            const cmd = e.target.value.toLowerCase().split(" ");
+            if (cmd[0] === "gold") gold = parseInt(cmd[1]);
+            if (cmd[0] === "nuke") units.forEach(u => { if(u.team === 'enemy') u.hp = 0; });
+            e.target.value = ""; document.getElementById('dev-console').style.top = "-100px"; e.target.blur();
+        }
+    });
+
+    function addWound(target, type) {
+        if(!target) return;
+        const wound = new THREE.Mesh(
+            type === 'hole' ? new THREE.CylinderGeometry(0.1, 0.1, 0.2, 6) : new THREE.BoxGeometry(0.05, 0.5, 0.2),
+            new THREE.MeshBasicMaterial({color: 0x550000})
+        );
+        wound.position.set((Math.random()-0.5)*0.8, (Math.random()-0.5)*1.2, 0.51);
+        if(type === 'hole') wound.rotation.x = Math.PI/2;
+        target.add(wound);
+    }
 
     function spawnUnit(team, type, cost) {
-        if(!gameRunning) return;
         if(team === 'player' && gold < cost) return;
         if(team === 'player') gold -= cost;
-
         const group = new THREE.Group();
-        let hp = 25, speed = team === 'player' ? -0.09 : 0.09, color = team === 'player' ? 0x2196f3 : 0xf44336;
-        let size = 1.2;
+        let hp = 100, speed = team === 'player' ? -0.15 : 0.15;
+        const color = team === 'player' ? 0x0077ff : 0xff2222;
 
-        if(type === 'skeleton') { hp = 90; speed *= 0.6; color = 0xcccccc; }
-        if(type === 'gold') { hp = 350; speed *= 1.1; color = 0xffd700; size = 2; }
+        if (type === 'plane') {
+            const fus = new THREE.Mesh(new THREE.BoxGeometry(2, 1, 6), new THREE.MeshStandardMaterial({color: 0x555555}));
+            const wings = new THREE.Mesh(new THREE.BoxGeometry(8, 0.2, 2), new THREE.MeshStandardMaterial({color: 0x444444}));
+            group.add(fus, wings);
+            group.position.set((Math.random()-0.5)*30, 25, 120);
+            speed = -0.9; hp = 9999;
+        } else if (type === 'jeep') {
+            hp = 250; speed = -0.3;
+            const car = new THREE.Mesh(new THREE.BoxGeometry(2, 1.2, 4), new THREE.MeshStandardMaterial({color: 0x1b5e20}));
+            group.add(car); group.userData.body = car;
+        } else {
+            if(type === 'bomber') { hp = 60; speed = -0.22; setTimeout(() => { speechSynthesis.speak(new SpeechSynthesisUtterance("I AM NACHO MAN!")); }, 100); }
+            const body = new THREE.Mesh(new THREE.BoxGeometry(1, 1.5, 1), new THREE.MeshStandardMaterial({color: type==='bomber'?0xffaa00:color}));
+            group.add(body); group.userData.body = body;
+        }
 
-        const mat = new THREE.MeshStandardMaterial({color: color});
-        const body = new THREE.Mesh(new THREE.BoxGeometry(size*0.7, size, size*0.7), mat);
-        group.add(body);
-        group.position.set((Math.random()-0.5)*20, size/2, team === 'player' ? 40 : -40);
+        if(type !== 'plane') group.position.set((Math.random()-0.5)*35, 1, team === 'player' ? 55 : -100);
         scene.add(group);
-        units.push({ mesh: group, team, hp, speed, vVel: 0, isFlying: false, mat: mat });
+        units.push({ mesh: group, team, type, hp, speed, bombTimer: 0, isDead: false });
     }
-
-    function armBarrage() {
-        if(gold >= 20) {
-            isAiming = true;
-            document.getElementById('mLaunch').innerText = "MARK GROUND";
-            document.getElementById('mLaunch').style.background = "#fff";
-            document.getElementById('mLaunch').style.color = "#000";
-        }
-    }
-
-    window.addEventListener('mousedown', e => {
-        if(!isAiming) return;
-        mouse.x = (e.clientX/window.innerWidth)*2-1; mouse.y = -(e.clientY/window.innerHeight)*2+1;
-        raycaster.setFromCamera(mouse, camera);
-        const hit = raycaster.intersectObject(ground);
-        if(hit.length > 0) {
-            gold -= 20;
-            const {x, z} = hit[0].point;
-            for(let i=0; i<5; i++) {
-                const m = new THREE.Mesh(new THREE.CylinderGeometry(0.2,0.2,2), new THREE.MeshBasicMaterial({color: 0xff4500}));
-                m.position.set(x+(Math.random()-0.5)*15, 60+i*5, z+(Math.random()-0.5)*15);
-                m.rotation.x = Math.PI/2;
-                scene.add(m);
-                bombs.push({mesh: m, tx: m.position.x, tz: m.position.z, isMain: i==0});
-                if(i==0) { currentMissile = m; isPOV = true; document.getElementById('crosshair').style.display='block'; }
-            }
-            isAiming = false;
-            document.getElementById('mLaunch').innerText = "BARRAGE (20G)";
-            document.getElementById('mLaunch').style.background = "#ff4500";
-            document.getElementById('mLaunch').style.color = "#fff";
-        }
-    });
 
     function animate() {
         requestAnimationFrame(animate);
-        if(!gameRunning) { renderer.render(scene, camera); return; }
-
-        gold += 0.01;
+        if(gamePaused) return;
+        gold += 0.04;
         document.getElementById('g-val').innerText = Math.floor(gold);
-        document.getElementById('hp-bar').style.width = enemyHP + "%";
+        document.getElementById('hp-bar').style.width = castleHP + "%";
 
-        if(enemyHP <= 0) returnToMenu();
-
-        if(shake > 0) { camera.position.x += (Math.random()-0.5)*shake; camera.position.y += (Math.random()-0.5)*shake; shake *= 0.9; }
-
-        // Camera Logic
-        if(isPOV && currentMissile) {
-            camera.position.set(currentMissile.position.x, currentMissile.position.y + 4, currentMissile.position.z + 5);
-            camera.lookAt(currentMissile.position.x, 0, currentMissile.position.z);
-        } else if(playerUnit && playerUnit.hp > 0) {
-            camera.position.set(playerUnit.mesh.position.x, 2, playerUnit.mesh.position.z);
-            camera.lookAt(playerUnit.mesh.position.x, 2, playerUnit.mesh.position.z - 10);
-            if(keys.w) playerUnit.mesh.position.z -= 0.22;
-            if(keys.s) playerUnit.mesh.position.z += 0.22;
-            if(keys.a) playerUnit.mesh.position.x -= 0.22;
-            if(keys.d) playerUnit.mesh.position.x += 0.22;
-        } else {
-            camera.position.lerp(new THREE.Vector3(0, 30, 45), 0.05);
-            camera.lookAt(0, 0, 0);
-            document.getElementById('crosshair').style.display = 'none';
-        }
-
-        // Bombs
-        bombs.forEach((b, i) => {
-            b.mesh.position.y -= 0.9;
-            if(b.mesh.position.y <= 0.5) {
-                shake = 1.2;
-                units.forEach(u => { if(u.mesh.position.distanceTo(b.mesh.position) < 8) { u.hp -= 40; u.isFlying = true; u.vVel = 0.7; } });
-                if(b.isMain) { isPOV = false; currentMissile = null; }
-                scene.remove(b.mesh); bombs.splice(i, 1);
+        // Archer Shooting
+        archers.forEach(a => {
+            a.shootTimer++;
+            const target = units.find(u => u.team === 'enemy' && u.mesh.position.z > 0);
+            if(target && a.shootTimer > 50) {
+                const arr = new THREE.Mesh(new THREE.SphereGeometry(0.25), new THREE.MeshBasicMaterial({color: 0xffff00}));
+                arr.position.copy(a.mesh.getWorldPosition(new THREE.Vector3()));
+                const dir = new THREE.Vector3().subVectors(target.mesh.position, arr.position).normalize();
+                projectiles.push({ mesh: arr, dir, type: 'arrow', life: 100 });
+                scene.add(arr); a.shootTimer = 0;
             }
         });
 
-        // Units
-        units.forEach((u, i) => {
-            if(!u.isFlying) {
-                u.mesh.position.z += u.speed;
+        for (let i = units.length - 1; i >= 0; i--) {
+            const u = units[i];
+            if(u.isDead) continue;
+            let blocked = false;
+
+            // COMBAT COLLISION LOCK
+            if(u.type !== 'plane') {
                 units.forEach(u2 => {
-                    if(u.team !== u2.team && u.mesh.position.distanceTo(u2.mesh.position) < 1.8) {
-                        u.mesh.position.z -= u.speed; u2.hp -= 0.5;
+                    if(u.team !== u2.team && u2.type !== 'plane' && u.mesh.position.distanceTo(u2.mesh.position) < 3.5) {
+                        blocked = true;
+                        u2.hp -= 1.0;
+                        if(Math.random() < 0.05) addWound(u2.mesh.userData.body, 'slash');
                     }
                 });
-            } else { u.mesh.position.y += u.vVel; u.vVel -= 0.03; if(u.mesh.position.y <= 0.6) u.isFlying = false; }
-            if(u.mesh.position.z < -35 && u.team === 'player') { enemyHP -= 5; u.hp = 0; }
-            if(u.hp <= 0) { scene.remove(u.mesh); units.splice(i, 1); if(u==playerUnit) playerUnit = null; }
+            }
+
+            if(!blocked) u.mesh.position.z += u.speed;
+
+            if(u.type === 'plane') {
+                u.bombTimer++;
+                if(u.bombTimer % 15 === 0) {
+                    const b = new THREE.Mesh(new THREE.SphereGeometry(0.5), new THREE.MeshBasicMaterial({color: 0x000000}));
+                    b.position.copy(u.mesh.position); projectiles.push({ mesh: b, type: 'bomb', life: 100 }); scene.add(b);
+                }
+                if(u.mesh.position.z < -160) { scene.remove(u.mesh); units.splice(i, 1); continue; }
+            }
+
+            if(u.team === 'enemy' && u.mesh.position.z > 58) { castleHP -= 5; u.hp = 0; }
+
+            if(u.hp <= 0) {
+                u.isDead = true;
+                if(u.type === 'bomber') {
+                    speechSynthesis.speak(new SpeechSynthesisUtterance("MUNCH ON THIS!"));
+                    units.forEach(e => { if(e.mesh.position.distanceTo(u.mesh.position) < 10) e.hp -= 100; });
+                }
+                u.mesh.rotation.x = Math.PI/2; u.mesh.position.y = 0.1;
+                if(u.mesh.userData.body) u.mesh.userData.body.material.color.setHex(0x330000);
+                const dBody = u.mesh; setTimeout(() => scene.remove(dBody), 12000);
+                units.splice(i, 1);
+            }
+        }
+
+        projectiles.forEach((p, pi) => {
+            if(p.type === 'arrow') p.mesh.position.add(p.dir.clone().multiplyScalar(1.2));
+            if(p.type === 'bomb') { p.mesh.position.y -= 0.6; if(p.mesh.position.y <= 0.5) p.life = 0; }
+            
+            if(p.type === 'bomb' && p.life <= 0) {
+                units.forEach(u => { if(u.team === 'enemy' && u.mesh.position.distanceTo(p.mesh.position) < 8) { u.hp -= 100; addWound(u.mesh.userData.body, 'hole'); }});
+            }
+            if(--p.life <= 0) { scene.remove(p.mesh); projectiles.splice(pi, 1); }
         });
 
         if(++enemyTimer > 100) { spawnUnit('enemy', 'soldier', 0); enemyTimer = 0; }
+        camera.position.set(0, 60, 115); camera.lookAt(0, 0, 10);
         renderer.render(scene, camera);
     }
     animate();
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//the cmd code
-<!DOCTYPE html>
-<html lang="">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
-    <header></header>
-    <main></main>
-    <footer></footer>
-  </body>
-</html>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>HTML Terminal</title>
-    <script src="https://cdn.jsdelivr.net/npm/jquery"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery.terminal/js/jquery.terminal.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery.terminal/css/jquery.terminal.min.css"/>
-</head>
-<body>
-</body>
-</html>
-<script>
-    $(document).ready(function() {
-        $('body').terminal({
-            hello: function(what) {
-                this.echo('login, ' + what + '. wecome to the student cmd ty for loging in you now have controll over the  chromebook   :).');
-            },
-            help: function() {
-                this.echo('Available commands: login (your name) help, clear');
-            }
-        }, {
-            // Optional: Customize greetings and other settings
-            greetings: 'Welcome  to the student Web Terminal!',
-            name: 'html_terminal',
-            prompt: 'you_ '
-        });
-    });
-</script>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Simple HTML Terminal</title>
-    <style>
-        .terminal {
-            background: black;
-            color: black ;
-            font-family: monospace;
-            padding: 10px;
-            height: 200px;
-            overflow-y: auto; /* Allows scrolling for history */
-        }
-        .line {
-            display: flex;
-        }
-        .prompt {
-            margin-right: 5px;
-        }
-        .input {
-            background: blue;
-            color: blue;
-            border: none;
-            outline: none; /* Removes the default input field outline */
-            flex-grow: 1; /* Makes input field fill remaining space */
-        }
-    </style>
-</head>
-<body>
-    <div class="terminal" id="terminal-output">
-        Welcome to the simple terminal!<br>
-        Type here:
-        <div class="line">
-            <span class="prompt">c:/ ></span>
-            <input type="text" class="input" id="terminal-input" autofocus>
-        </div>
-    </div>
-
-    <script>
-        const input = document.getElementById('terminal-input');
-        const output = document.getElementById('terminal-output');
-
-        input.addEventListener('keydown', function(e) {
-            if (e.keyCode === 13) { // Check if Enter key is pressed
-                const command = input.value;
-                output.innerHTML += '<br>' + '<span class="prompt">c:/ ></span> ' + command + '<br>';
-                // Process the command here (e.g., if/else statements)
-                if (command === 'help') {
-                    output.innerHTML += 'Available commands: help, clear<br>';
-                } else if (command === 'clear') {
-                    // Simple clear functionality (clears history but keeps prompt line)
-                    output.innerHTML = 'Welcome to the simple terminal!<br>Type here: <div class="line"><span class="prompt">c:/ ></span> <input type="text" class="input" id="terminal-input" autofocus></div>';
-                } else {
-                    output.innerHTML += 'Unknown command: ' + command + '<br>';
-                }
-                input.value = '';
-                // Scroll to the bottom
-                output.scrollTop = output.scrollHeight;
-            }
-        });
-    </script>
-</body><button onclick="alert( your a nigger!');">dont press me:)</button>
-<a href="#" onclick="console.log('Command executed in console!');"kill</a>
-
-</html>
-<a href="https://rickrolllol.yourwebsitespace.com/" style="appearance: button; text-decoration: none; color: black; background: #eee; padding: 5px 10px; border: 1px solid #000;">
-  KILL SWITCH
-</a>
